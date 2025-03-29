@@ -6,7 +6,7 @@ A real-time multiplayer card game implementation of Speed using WebSocket for cl
 
 ### Backend
 - Rust
-- WebSocket server (using Tokio and Warp)
+- WebSocket server (using Tokio and Tungstenite)
 - Game logic implementation
 
 ### Frontend
