@@ -1,0 +1,16 @@
+{
+  "name": "speed-game",
+  "version": "1.0.0",
+  "description": "A real-time multiplayer card game implementation of Speed using WebSocket",
+  "scripts": {
+    "start:server": "cd server && cargo run",
+    "start:client": "cd client && npm start",
+    "start": "concurrently \"npm run start:server\" \"npm run start:client\"",
+    "build:server": "cd server && cargo build --release",
+    "build:client": "cd client && npm run build",
+    "build": "npm run build:server && npm run build:client"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
