@@ -231,16 +231,8 @@ export class SpeedScene extends Phaser.Scene {
       return;
     }
     
-    // Determine which pile to play on (closest one)
-    const { width } = this.scale;
-    const centerX = width / 2;
-    const cardX = this.playerCards[cardIndex].x;
-    
-    // Play on left pile if card is on left side, right pile if on right side
-    const pileIndex = cardX < centerX ? 0 : 1;
-    
     // Send the action to the server
-    webSocketService.playCard(cardIndex, pileIndex);
+    webSocketService.playCard(cardIndex);
   }
   
   private getCardTexture(card: Card): string {

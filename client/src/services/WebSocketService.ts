@@ -29,6 +29,7 @@ export class WebSocketService {
         try {
           const raw = JSON.parse(event.data);
           const gameState: PlayerView = this.parseGameState(raw);
+          console.log('Received game state:', gameState);
           if (this.gameStateCallback) {
             this.gameStateCallback(gameState);
           }
@@ -82,11 +83,10 @@ export class WebSocketService {
   }
 
   // Play a card from the player's hand to a center pile
-  public playCard(cardIndex: number, pileIndex: number): void {
+  public playCard(cardIndex: number): void {
     this.sendAction({
       PlayCard: {
         card_index: cardIndex,
-        pile_index: pileIndex,
       }
     });
   }

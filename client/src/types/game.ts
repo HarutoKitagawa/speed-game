@@ -31,7 +31,7 @@ export interface Card {
 
 // Player actions
 export type PlayerAction = 
-  | { PlayCard: { card_index: number, pile_index: number } }
+  | { PlayCard: { card_index: number } }
   | { RequestNewCenterCards: null };
 
 // Player view of the game state

@@ -91,7 +91,7 @@ pub struct PlayerView {
 // Actions a player can take
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum PlayerAction {
-    PlayCard { card_index: usize, pile_index: usize },
+    PlayCard { card_index: usize },
     RequestNewCenterCards,
 }
 
@@ -184,8 +184,8 @@ impl GameState {
         }
         
         match command.action {
-            PlayerAction::PlayCard { card_index, pile_index } => {
-                self.play_card(command.player_id, card_index, pile_index);
+            PlayerAction::PlayCard { card_index } => {
+                self.play_card(command.player_id, card_index);
             }
             PlayerAction::RequestNewCenterCards => {
                 self.request_new_center_cards();
@@ -197,7 +197,7 @@ impl GameState {
     }
     
     // Play a card from a player's hand to a center pile
-    fn play_card(&mut self, player_id: Uuid, card_index: usize, pile_index: usize) {
+    fn play_card(&mut self, player_id: Uuid, card_index: usize) {
         // Find the player
         let player_index = self.players.iter().position(|p| p.id == player_id);
         if player_index.is_none() {
@@ -206,21 +206,26 @@ impl GameState {
         let player_index = player_index.unwrap();
         
         // Check if the indices are valid
-        if card_index >= self.players[player_index].hand.len() || pile_index >= self.center_piles.len() {
+        if card_index >= self.players[player_index].hand.len() {
             return;
         }
         
         // Get the card and the pile
         let card = self.players[player_index].hand[card_index];
-        let pile = &self.center_piles[pile_index];
-        
-        // Check if the card can be played on the pile
-        if !pile.is_empty() {
-            let top_card = pile.last().unwrap();
-            if !card.rank.can_play_on(&top_card.rank) {
-                return;
+
+        // Find a valid pile to play the card
+        let mut selected_pile_index = None;
+        for (i, pile) in self.center_piles.iter().enumerate() {
+            if pile.is_empty() || card.rank.can_play_on(&pile.last().unwrap().rank) {
+                selected_pile_index = Some(i);
+                break;
             }
         }
+
+        let pile_index = match selected_pile_index {
+            Some(index) => index,
+            None => return,
+        };
         
         // Play the card
         self.players[player_index].hand.remove(card_index);
